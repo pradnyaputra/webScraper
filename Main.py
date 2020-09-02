@@ -1,13 +1,21 @@
 import requests
 from bs4 import BeautifulSoup
 
-preset ="https://pitchfork.com/reviews/albums/"
-query ="rich-brian-the-sailor"
 
-source = requests.get(preset+query).text
+def reviewScrape():
+    preset = "https://pitchfork.com/reviews/albums/"
+    query = "rich-brian-the-sailor"
 
-soup = BeautifulSoup(source, 'lxml')
+    search = preset + query + "/"
 
-result = soup.find("div", class_="contents dropcap").text
+    source = requests.get(search).text
 
-print(result)
+    soup = BeautifulSoup(source, 'lxml')
+
+    review =""
+    for paragraph in soup.find_all("p"):
+        review = review+"\n"+paragraph.text
+    print(review)
+
+
+reviewScrape()
