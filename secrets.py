@@ -1,3 +1,3 @@
-spotifyToken="BQApup_xmu-keCfJ3mmG5QR0e_HsnWPT2jWHHt-HDvDrjhJyQgnOuBezSlZaUlZYMGq8_6pWa_EoIQHCSvssQCxOGy_CkpdTqvGnklJ1s8uSZuYoIvd95jVRaOIHI1Hq1j6B-DgsYmLIXjl5s5rD2R4"
+spotifyToken="BQBN5PWZbBk4KF_MtSbbb2_w6COrM_Swn0WMuEh5uwjZPWuIIQZrSKDmBdsrxDxHRlbCtGCsEiRDxBTmXnEegkKc-K8osEsWiUs3UGB7mX5e-Jd7FIAfpjybpvWQO65wPXzEpVEgxTBypT76DZLHFvc"
 
 #Where to get token for currently playing song: https://developer.spotify.com/console/get-users-currently-playing-track/?market=&additional_types=

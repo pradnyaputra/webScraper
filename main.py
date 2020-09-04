@@ -1,15 +1,35 @@
 from spotifyClient import *
 from pitchforkClient import *
 
-artistName, albumName = findCurrent()
-if artistName=="error" and albumName=="error":
-    print("ERROR: Having trouble reaching Spotify...")
-    exit(1)
-if artistName=="error" and albumName=="token":
-    print("ERROR: Invalid Spotify access token")
-    exit(1)
+def spotifyHandler():
+    artistName, albumName, albumID = getCurrentTrack()
+    if artistName=="error" and albumName=="unknown":
+        print("ERROR: Unknown problem while connecting to Spotify...")
+        exit(1)
+    if artistName=="error" and albumName=="token":
+        print("ERROR: Invalid or expired Spotify access token")
+        exit(1)
+    if artistName=="error" and albumName=="noTrack":
+        print("ERROR: No music was playing from the Spotify account")
+        exit(1)
 
-query = convertQuery(artistName, albumName)
-review = reviewScrape(query)
+    trackList = getAlbumTracks(albumID)
 
-print(review)
+    for trackDetails in trackList:
+        trackDetails[2] = getTrackFeatures(trackDetails[0])
+
+
+    rankedTracks=[]
+    return artistName, albumName, rankedTracks
+
+def webscrapeHandler(artist, album):
+    query = convertToQuery(artist, album)
+    review = reviewScrape(query)
+
+    print(review)
+
+def main():
+    artist, album, ranked = spotifyHandler()
+    webscrapeHandler(artist, album)
+
+main()

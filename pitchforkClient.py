@@ -26,8 +26,21 @@ def reviewScrape(query):
 
     return review
 
-def convertQuery(artistName, albumName):
+def convertToQuery(artistName, albumName):
     query = artistName+"-"+albumName
+
+    query = query.replace(" (Deluxe)", "")
+    query = query.replace(" - ", "-")
+    query = query.replace("_", "")
+    query = query.replace("/","")
+    query = query.replace("\\","")
+    query = query.replace(")", "")
+    query = query.replace("(", "")
+    query = query.replace("'", "")
+    query = query.replace('"', "")
+    query = query.replace(",", "")
+    query = query.replace(".", "")
     query = query.replace(" ","-")
-    query = query.lower()
+    query = query.replace("&", "and")
+
     return query.lower()
