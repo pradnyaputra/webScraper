@@ -29,4 +29,5 @@ def reviewScrape(query):
 def convertQuery(artistName, albumName):
     query = artistName+"-"+albumName
     query = query.replace(" ","-")
+    query = query.lower()
     return query.lower()

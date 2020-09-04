@@ -14,8 +14,15 @@ def findCurrent():
 
     jsonFormat = result.json()
 
-    artist = jsonFormat["item"]["album"]["artists"][0]["name"]
-    album = jsonFormat["item"]["album"]["name"]
+    try:
+        artist = jsonFormat["item"]["album"]["artists"][0]["name"]
+        album = jsonFormat["item"]["album"]["name"]
+    except:
+        try:
+            if jsonFormat["error"]["message"]=="The access token expired":
+                return "error", "token"
+        except:
+            return "error", "unknown"
 
     return artist, album
 
