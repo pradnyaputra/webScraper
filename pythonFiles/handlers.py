@@ -10,7 +10,7 @@ def spotifyHandler():
     if artistName=="error" and albumName=="token":
         return "ERROR","Invalid or expired Spotify access token",0,0
     if artistName=="error" and albumName=="noTrack":
-        return "ERROR","No music was found playing from the Spotify account",0,0
+        return "ERROR","No music playing from the Spotify account",0,0
 
     trackList, coverURL = getAlbumDetails(albumID)
 

@@ -1,31 +1,28 @@
 from pythonFiles.handlers import *
 import tkinter as tk
 from tkinter import *
-#from PIL import ImageTk,Image
-
+from PIL import ImageTk,Image
+import shutil
 
 def getInfo():
     artist, album, albumURL, ranked = spotifyHandler()
     if albumURL==0:
         #if this is true, the artist variable will contain an error message that will be displayed
         reviewFinal = "Cannot display information due to error..."
-        reviewSubTitle.configure(text="")
     else:
         reviewFinal = webscrapeHandler(artist, album)
 
-    reviewText.configure(state=NORMAL)
-    reviewTitle.configure(text=f"{artist} | {album}")
-    reviewText.insert(INSERT, reviewFinal)
-    reviewText.configure(state=DISABLED)
-    #return albumURL, reviewFinal, artist, album
+    return albumURL, reviewFinal, artist, album, ranked
+
+albumURL, reviewFinal, artist, album, rankedTracks=getInfo()
 
 window = tk.Tk()
 
 window.title("Music Teacher")
 window.minsize(1300, 750)
 
-albumFrame = tk.Frame(window, bg="#1a1a1a", width=300)
-albumFrame.pack(side=RIGHT, fill="y")
+sidebar = tk.Frame(window, bg="#1a1a1a", width=300)
+sidebar.pack(side=RIGHT, fill="y")
 
 reviewCanvas = tk.Canvas(window, bg="#222A35", bd=0, highlightthickness=0, relief='ridge')
 reviewCanvas.pack(side=RIGHT, fill=BOTH, expand=True)
@@ -40,12 +37,38 @@ reviewText = tk.Text(reviewCanvas)
 reviewText.place(relwidth=0.9, relheight=0.85, relx=.05, rely=.125)
 reviewText.configure(bg="#222A35", fg="#b3b3b3", font=("verdana", 12), bd=0, wrap = WORD)
 
-#canvas = Canvas(root, width = 300, height = 300)
-#canvas.pack()
-#img = ImageTk.PhotoImage(Image.open("ball.png"))
-#canvas.create_image(20, 20, anchor=NW, image=img)
+reviewTitle.configure(text=f"{artist} | {album}")
+reviewText.insert(INSERT, reviewFinal)
+reviewText.configure(state=DISABLED)
 
-getInfo()
+if albumURL!=0:
+    albumimage = albumURL
+    filename = "artwork.jpg"
+
+    # Open the url image, set stream to True, this will return the stream content.
+    r = requests.get(albumimage, stream = True)
+
+    with open(filename, 'wb') as f:
+        shutil.copyfileobj(r.raw, f)
+
+    img = ImageTk.PhotoImage(Image.open("artwork.jpg"))
+else:
+    img = ImageTk.PhotoImage(Image.open("errorImage.jpg"))
+
+albumLabel = Label(sidebar, image = img, bd=0)
+albumLabel.pack()
+
+rankedListTitle = tk.Label(sidebar, text="Album Songs Ranked In Popularity", bg="#1a1a1a", fg="light grey", pady=10, font=("verdana", 10, "bold"))
+rankedListTitle.pack(side=TOP, fill="x")
+
+rankedTracksList = Listbox(sidebar, bg="#1a1a1a", fg="#b3b3b3", bd=0, highlightthickness=0, font=("verdana", 10))
+
+for track in rankedTracks:
+    rankedTracksList.insert(END, f"{track[1]}")
+
+#rankedTracksList.configure(state=DISABLED)
+rankedTracksList.pack(side=TOP, fill="both", expand=True)
+
 window.mainloop()
 
 
