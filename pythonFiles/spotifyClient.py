@@ -1,5 +1,7 @@
 import requests
-from secrets import spotifyToken
+
+from pythonFiles.secrets import spotifyToken
+
 
 def getCurrentTrack():
     endpoint = "https://api.spotify.com/v1/me/player/currently-playing"
@@ -29,29 +31,41 @@ def getCurrentTrack():
 
     return artist, album, albumID
 
-def getAlbumTracks(albumID):
-    endpoint = f"https://api.spotify.com/v1/albums/{albumID}/tracks"
-
-    result = requests.get(endpoint,
+def getAlbumDetails(albumID):
+    endpointAlbumTracks = f"https://api.spotify.com/v1/albums/{albumID}/tracks"
+    resultTracks = requests.get(endpointAlbumTracks,
                           headers={
                               "Accept": "application/json",
                               "Content-Type": "application/json",
                               "Authorization": f"Bearer {spotifyToken}"
                           }
                           )
-    jsonResult = result.json()
+    jsonResultTracks = resultTracks.json()
 
-    trackList = [[0 for i in range(3)] for j in range (len(jsonResult["items"]))]
 
-    for i in range (len(jsonResult["items"])):
-        trackList[i][0]=jsonResult["items"][i]["id"]
-        trackList[i][1]=jsonResult["items"][i]["name"]
+    endpointAlbumIcon = f"https://api.spotify.com/v1/albums/{albumID}"
+    resultImage = requests.get(endpointAlbumIcon,
+                            headers={
+                                "Accept": "application/json",
+                                "Content-Type": "application/json",
+                                "Authorization": f"Bearer {spotifyToken}"
+                            }
+                            )
+    jsonAlbumIcon = resultImage.json()
+
+    coverURL = jsonAlbumIcon["images"][1]["url"]
+
+    trackList = [[0 for i in range(3)] for j in range (len(jsonResultTracks["items"]))]
+
+    for i in range (len(jsonResultTracks["items"])):
+        trackList[i][0]=jsonResultTracks["items"][i]["id"]
+        trackList[i][1]=jsonResultTracks["items"][i]["name"]
         trackList[i][2]=0
 
-    return trackList
+    return trackList, coverURL
 
-def getTrackFeatures(trackID):
-    endpoint = f"https://api.spotify.com/v1/audio-features/{trackID}"
+def getTrackPopularity(trackID):
+    endpoint = f"https://api.spotify.com/v1/tracks/{trackID}"
 
     result = requests.get(endpoint,
                           headers={
@@ -62,10 +76,9 @@ def getTrackFeatures(trackID):
                           )
     jsonResult = result.json()
 
-    score = jsonResult["danceability"]+jsonResult["energy"]+jsonResult["loudness"]+jsonResult["speechiness"]+jsonResult["acousticness"]+jsonResult["instrumentalness"]+jsonResult["valence"]+jsonResult["tempo"]
-    return score
+    popularity = jsonResult["popularity"]
+    return popularity
 
 if(__name__=="__main__"):
     pass
-    #findCurrentTrack()
 
